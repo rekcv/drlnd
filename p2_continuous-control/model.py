@@ -2,8 +2,9 @@ import torch as T
 import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.distributions import Categorical
 from torch.distributions import Normal
+from torch.distributions import MultivariateNormal
+
 
 #-- MEMORY USED BY THE MODEL
 class ModelMemory:
@@ -41,23 +42,31 @@ class ModelMemory:
 #-- MODEL
 class ActorCritic(nn.Module):
 
-    def __init__(self, input_size, action_size, actor_layer_size=128, critic_layer_size = 128, gamma=0.99):
+    def __init__(self, input_size, action_size, actor_layer_size=32, critic_layer_size = 32, gamma=0.99):
         super(ActorCritic, self).__init__()
 
-        self.base = nn.Sequential( nn.Linear( input_size, actor_layer_size ), 
-                                    nn.ReLU())
+        self.base = nn.Sequential( nn.Linear( input_size, 400 ), 
+                                   nn.ReLU(), 
+                                   nn.Linear( 400, 300 ), 
+                                   nn.ReLU() )
 
         # Initialize actor network
         # -- This network will calculate the policy
         #    Our actions are continuous, so we will use a Normal distribution to sample them
         #    To do that, we want to calculate mean and standard variation for each element of the action
-        self.actorMu = nn.Sequential( nn.Linear( actor_layer_size, action_size ), nn.Tanh() )  #use tanh since the values can be -1..1
-        self.actorSigma = nn.Sequential( nn.Linear( actor_layer_size, action_size ), nn.Softplus() ) #softplus will allow some negative values to be transformed to positive
+        self.actorMu = nn.Sequential(   nn.Linear( 300, action_size ), 
+                                        nn.Tanh() )  #use tanh since the values can be -1..1
+        self.actorSigma = nn.Sequential( nn.Linear( 300, action_size ), 
+                                         nn.Softplus() ) #softplus will allow some negative values to be transformed to positive
         
         # Initialize critic network
         # -- This network will calculate the value of the actions chosen by the actor
-        self.critic = nn.Linear( critic_layer_size, 1 )
-
+        self.critic = nn.Sequential( nn.Linear( input_size, 400 ), 
+                                     nn.ReLU(), 
+                                     nn.Linear( 400, 300 ), 
+                                     nn.ReLU(), 
+                                     nn.Linear( 300, 1 ) )
+        
         # Memory
         self.memory = ModelMemory()
         
@@ -65,6 +74,7 @@ class ActorCritic(nn.Module):
         self.gamma = gamma
         
         self.action_size = action_size
+        
 
     def forward( self, state ):
         # first, map inputs to hidden layer
@@ -75,7 +85,7 @@ class ActorCritic(nn.Module):
         sigma = self.actorSigma( base_out )
 
         # update critic
-        v = self.critic( base_out )
+        v = self.critic( state )
     
         return mu, sigma, v
         
@@ -101,33 +111,17 @@ class ActorCritic(nn.Module):
  
         distribution = Normal( mu, sigma )
         log_probabilities = distribution.log_prob( actions )
-        actor_loss = -log_probabilities * ( returns - values )
-
-        total_loss = ( critic_loss + actor_loss ).mean()
+        actor_loss = -log_probabilities * ( returns - values ).reshape([returns.size(0), 1])
+        
+        total_loss = ( critic_loss.reshape([returns.size(0), 1]) + actor_loss ).mean()
         return total_loss
             
     def choose_action( self, state ):
         state = T.tensor( [state], dtype= T.float )
         mu, sigma, _ = self.forward( state )
-
+        
         distribution = Normal( mu, sigma )
         action = distribution.sample()[0].numpy()
         action = np.clip(action, -1, 1)
 
         return action
-
-    def step(self, state, action, reward, next_state, done):
-        """ Updates the agent after an action is taken """
-        
-        # Remember this step
-        self.memory.add(state, action, reward, next_state, done)
-
-        # Decide whether we need to get another batch of samples from the memory
-        if self.t_step == 0:
-            if len(self.memory) > self.batch_size:
-                experiences = self.memory.sample(self.device)
-                self.learn(experiences)
-        
-        self.t_step += 1
-        if self.t_step >= self.update_every:
-            self.t_step = 0
