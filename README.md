@@ -4,14 +4,7 @@ This repository is being used to upload the different projects I have worked on 
 --------
 p2_continuous-control: Contains an implementation of DDPG to solve the continuous control problem (Unity Reacher Environment - Multiagent)
 
-5/1/2021
---------
-p1_navigation: Contains an implementation of DQN to solve the navigation problem (Unity Banana Collector Environment).
-
-
-### p2_continuous-control (2/9/2022)
-
-
+# p2_continuous-control (2/9/2022)
 ## Project Details:
 
 This project presents an implementation of DDPG to solve a simplified version of the Multiagent Reacher Environment from Unity's ML-Agents.
@@ -43,9 +36,11 @@ Clone [my repository](https://github.com/rekcv/drlnd) and extract the environmen
 **The solution can be run via p2_continuous-control\Report.ipynb**
 
 
-### p1_navigation (5/1/2021)
+5/1/2021
+--------
+p1_navigation: Contains an implementation of DQN to solve the navigation problem (Unity Banana Collector Environment).
 
-
+# p1_navigation (5/1/2021)
 ## Project Details:
 
 This project presents an implementation of DQN to solve a simplified version of the Banana Collector Environment from Unity's ML-Agents.
