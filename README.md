@@ -15,7 +15,7 @@ The environment is considered solved, when the average (over 100 episodes) of th
 After each episode, we add up the rewards that each agent received (without discounting), to get a score for each agent. This yields 20 (potentially different) scores. We then take the average of these 20 scores.
 This yields an average score for each episode (where the average is over all 20 agents).
 
-Our solution has been able to solve the environment in 562 episodes, with an average score of 13.06 over the last 100 episodes of the training.
+Our solution has been able to solve the environment in 165 episodes, with an average score of 30.01 over the last 100 episodes of the training.
 
 ### Getting started
 
