@@ -4,8 +4,8 @@ This repository is being used to upload the different projects I have worked on 
 --------
 p2_continuous-control: Contains an implementation of DDPG to solve the continuous control problem (Unity Reacher Environment - Multiagent)
 
-# p2_continuous-control (2/9/2022)
-## Project Details:
+## p2_continuous-control (2/9/2022)
+### Project Details:
 
 This project presents an implementation of DDPG to solve a simplified version of the Multiagent Reacher Environment from Unity's ML-Agents.
 
@@ -19,7 +19,7 @@ This yields an average score for each episode (where the average is over all 20 
 
 Our solution has been able to solve the environment in 562 episodes, with an average score of 13.06 over the last 100 episodes of the training.
 
-## Getting started
+### Getting started
 
 Please follow the instructions in the [DRLND GitHub repository](https://github.com/udacity/deep-reinforcement-learning#dependencies) to set up your Python environment.
 
@@ -40,8 +40,8 @@ Clone [my repository](https://github.com/rekcv/drlnd) and extract the environmen
 --------
 p1_navigation: Contains an implementation of DQN to solve the navigation problem (Unity Banana Collector Environment).
 
-# p1_navigation (5/1/2021)
-## Project Details:
+## p1_navigation (5/1/2021)
+### Project Details:
 
 This project presents an implementation of DQN to solve a simplified version of the Banana Collector Environment from Unity's ML-Agents.
 
@@ -58,7 +58,7 @@ The task is episodic, and in order to solve the environment, the agent must get 
 
 Our solution has been able to solve the environment in 562 episodes, with an average score of 13.06 over the last 100 episodes of the training.
 
-## Getting started
+### Getting started
 
 Please follow the instructions in the [DRLND GitHub repository](https://github.com/udacity/deep-reinforcement-learning#dependencies) to set up your Python environment.
 
